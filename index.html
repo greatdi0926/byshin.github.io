@@ -1,50 +1,214 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title>BYS/Inquiry</title> 
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="1138">
-  <style type="text/css">
-    p.p1 {
-      font-family: Helvetica;
-      margin: 0;
-      font-size: 9.5em;
-      letter-spacing: -0.0075em;
-      word-spacing: -0.04em;
-      line-height: 102%;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BYS / Interactive Lens</title>
+  <style>
+    :root {
+      --x: 50vw;           /* lens center X */
+      --y: 50vh;           /* lens center Y */
+      --r: 140px;          /* lens radius */
+      --ring: 4px;         /* ring thickness */
+      --bg: #0a0a0a;       /* page background */
+      --fg: #e6e6e6;       /* base text color */
+      --accent: hotpink;   /* link color */
+      --scale: 1.6;        /* magnification */
+      --blur: 0px;         /* optional glow blur for lens edge */
+      --hue: 0deg;         /* hue shift for zoom layer */
     }
-    p.p2 {
-      font-family: Helvetica;
-      margin: 0;
-      font-size: 7em;
-      letter-spacing: -0.0075em;
-      line-height: 102%;
+
+    html, body {
+      height: 100%;
     }
-    /* 이메일 전용 스타일 */
-    p.email {
-      font-family: Helvetica;
+
+    body {
       margin: 0;
-      font-size: 5em; /* 👈 원하는 크기로 조절 가능 */
-      letter-spacing: -0.0075em;
-      line-height: 120%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      overflow-x: hidden;
     }
-    span.s1 {font-weight: bold;}
-    a:link, a:visited, a:hover, a:active {
-      color: hotpink;
-      text-decoration: none;
+
+    a, a:visited { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .wrap {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: start stretch;
+      padding: clamp(20px, 3vw, 48px);
+    }
+
+    /* Content base (normal) */
+    .content {
+      position: relative;
+      z-index: 1;
+      user-select: text;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: clamp(32px, 8vw, 160px);
+      line-height: 1.02;
+      margin: 0 0 0.25em 0;
+    }
+
+    .spacer { height: 1.2em; }
+
+    .lede {
+      font-size: clamp(18px, 3.2vw, 56px);
+      line-height: 1.1;
+      margin: 0 0 0.6em 0;
+      max-width: 1200px;
+      letter-spacing: -0.01em;
+    }
+
+    .mail {
+      font-size: clamp(18px, 3vw, 48px);
+      line-height: 1.2;
+      margin: 0.4em 0 0 0;
+    }
+
+    /* Zoom layer (cloned content, scaled & clipped to circular lens) */
+    .zoom-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none; /* allow clicks to pass through */
+      z-index: 5;
+      filter: hue-rotate(var(--hue)) saturate(1.2);
+    }
+
+    .zoom-inner {
+      transform-origin: 0 0; /* we will translate so (0,0) aligns */
+      transform: translate(calc(-1 * var(--x) + var(--r)), calc(-1 * var(--y) + var(--r))) scale(var(--scale));
+      color: #ffffff; /* brighter text within lens */
+    }
+
+    /* Clip the scaled layer to a circle at the cursor */
+    .zoom-layer {
+      -webkit-clip-path: circle(var(--r) at var(--x) var(--y));
+              clip-path: circle(var(--r) at var(--x) var(--y));
+    }
+
+    /* A subtle ring to visualize the lens edge */
+    .lens-ring {
+      position: fixed;
+      left: calc(var(--x) - var(--r));
+      top:  calc(var(--y) - var(--r));
+      width: calc(var(--r) * 2);
+      height: calc(var(--r) * 2);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 6;
+      box-shadow:
+        0 0 0 var(--ring) rgba(255,255,255,0.6),
+        0 0 calc(var(--ring) * 2) calc(var(--ring) * 0.5) rgba(255,255,255,0.15);
+      backdrop-filter: blur(var(--blur));
+    }
+
+    /* Optional nice grid background that subtly reacts */
+    .grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        linear-gradient(90deg, #fff2 1px, transparent 1px),
+        linear-gradient(#fff2 1px, transparent 1px);
+      background-size: 40px 40px;
+      transform: translateZ(0);
+    }
+
+    @media (max-width: 600px) {
+      :root { --r: 110px; --scale: 1.5; }
     }
   </style>
 </head>
 <body>
-  <p class="p1"><span class="s1">BYSHIN</span></p> 
-  <p class="p2"><br></p>
-  <p class="p1">A Creative Design Studio &amp; Brand Exploration Lab by Shin—
-exploring where Product, AI, Experience, Space, and Visual Design converge
-to create systems that connect people, technology, and culture.</p> 
-  <p class="p2"><br></p> 
-  <p class="email"><a href="mailto:officebyshin@gmail.com">officebyshin@gmail.com</a></p> 
-  <p class="p2"><br></p>
+  <div class="grid" aria-hidden="true"></div>
+
+  <div class="wrap" id="stage">
+    <!-- Base content -->
+    <main class="content" id="content">
+      <h1 class="brand">BYSHIN</h1>
+      <div class="spacer"></div>
+      <p class="lede">
+        A Creative Design Studio &amp; Brand Exploration Lab by Shin—
+        exploring where Product, AI, Experience, Space, and Visual Design converge
+        to create systems that connect people, technology, and culture.
+      </p>
+      <p class="mail"><a href="mailto:officebyshin@gmail.com">officebyshin@gmail.com</a></p>
+    </main>
+  </div>
+
+  <!-- Zoom layer: we clone the content and scale it, then clip to a circle at the pointer -->
+  <div class="zoom-layer" id="zoomLayer" aria-hidden="true"></div>
+  <div class="lens-ring" id="lensRing" aria-hidden="true"></div>
+
+  <script>
+    // Clone the content once and place into the zoom layer
+    const content = document.getElementById('content');
+    const zoomLayer = document.getElementById('zoomLayer');
+    const lensRing = document.getElementById('lensRing');
+
+    const cloned = content.cloneNode(true);
+    cloned.classList.add('zoom-inner');
+    cloned.id = 'contentZoom';
+    // Optionally tweak link color inside lens for contrast
+    cloned.querySelectorAll('a').forEach(a => a.style.color = '#8be9fd');
+    zoomLayer.appendChild(cloned);
+
+    const root = document.documentElement;
+
+    function updateVars(x, y) {
+      root.style.setProperty('--x', x + 'px');
+      root.style.setProperty('--y', y + 'px');
+      // Map x position to hue rotate for playful color shift
+      const w = window.innerWidth || 1;
+      const hue = Math.round((x / w) * 180) + 'deg';
+      root.style.setProperty('--hue', hue);
+    }
+
+    // Initialize at center
+    updateVars(window.innerWidth / 2, window.innerHeight / 2);
+
+    // Track pointer movement across the viewport
+    window.addEventListener('mousemove', (e) => {
+      updateVars(e.clientX, e.clientY);
+    });
+
+    // For touch devices – follow the first touch point
+    window.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      if (t) updateVars(t.clientX, t.clientY);
+    }, { passive: true });
+
+    // Optional: scroll syncing so the zoomed clone stays aligned with the base
+    window.addEventListener('scroll', () => {
+      // translate the zoom-inner vertically to match scroll offset
+      const y = window.scrollY || 0;
+      cloned.style.marginTop = (-y) + 'px';
+    });
+
+    // Accessibility: keyboard-controlled lens move (arrows to nudge)
+    window.addEventListener('keydown', (e) => {
+      const step = e.shiftKey ? 40 : 10;
+      const styles = getComputedStyle(root);
+      let x = parseFloat(styles.getPropertyValue('--x'));
+      let y = parseFloat(styles.getPropertyValue('--y'));
+      if (e.key === 'ArrowLeft') x -= step;
+      if (e.key === 'ArrowRight') x += step;
+      if (e.key === 'ArrowUp') y -= step;
+      if (e.key === 'ArrowDown') y += step;
+      if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) {
+        e.preventDefault();
+        updateVars(x, y);
+      }
+    });
+  </script>
 </body>
 </html>
