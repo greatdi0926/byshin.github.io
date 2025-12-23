@@ -1,167 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title>BYS/Inquiry</title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="1138">
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style type="text/css">
+  <title>BYS / Inquiry</title>
+  <style>
     :root{
-      --mx: 50%;          /* mouse x (percentage of viewport) */
-      --my: 50%;          /* mouse y (percentage of viewport) */
-      --glow: 900px;      /* gradient radius */
-      --h: 0deg;          /* optional global hue shift */
-      --bg: #0a0a0a;      /* page background */
-      --link: hotpink;    /* base link color */
+      --bg:#0b0b0b;
+      --fg:#f2f2f2;
+      --muted:#bdbdbd;
+      --rule:rgba(255,255,255,.16);
     }
 
-    html, body { height:100%; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: #e6e6e6;
-      font-family: Helvetica, Arial, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto;
-      filter: hue-rotate(var(--h)); /* playful global tint by X position */
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      letter-spacing:-0.01em;
     }
 
-    /* Base typography from original */
-    p.p1 {
-      font-family: Helvetica;
-      margin: 0;
-      font-size: 9.5em;
-      letter-spacing: -0.0075em;
-      word-spacing: -0.04em;
-      line-height: 102%;
-    }
-    p.p2 {
-      font-family: Helvetica;
-      margin: 0;
-      font-size: 7em;
-      letter-spacing: -0.0075em;
-      line-height: 102%;
-    }
-    /* 이메일 전용 스타일 */
-    p.email {
-      font-family: Helvetica;
-      margin: 0;
-      font-size: 5em; /* 원하는 크기로 조절 가능 */
-      letter-spacing: -0.0075em;
-      line-height: 120%;
-    }
-    span.s1 {font-weight: bold;}
-
-    /* Interactive chromatic text effect */
-    .chromatic {
-      /* Fallback color if background-clip is unsupported */
-      color: #ffffff;
-      /* Multicolor radial gradient that follows the cursor */
-      background-image:
-        radial-gradient(
-          var(--glow) circle at var(--mx) var(--my),
-          #ff008a 0%,
-          #ffec00 25%,
-          #00e5ff 50%,
-          #8a2be2 75%,
-          rgba(255,255,255,0.05) 100%
-        );
-      -webkit-background-clip: text;
-              background-clip: text;
-      color: transparent; /* reveal gradient inside text */
-      transition: background-position 50ms linear; /* tiny smoothing */
+    .wrap{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      padding: clamp(28px, 6vw, 80px);
     }
 
-    /* Links keep brand color, but get a subtle glow that follows the cursor */
-    a:link, a:visited, a:hover, a:active { color: var(--link); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    /* Optional soft vignette that reacts to the cursor for depth */
-    .stage::before{
-      content:"";
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background:
-        radial-gradient(
-          60vmax 60vmax at var(--mx) var(--my),
-          rgba(255,255,255,0.08),
-          transparent 60%
-        );
-      mix-blend-mode: screen;
+    .card{
+      width:min(980px, 100%);
     }
 
-    .container{ position: relative; z-index: 1; padding: 4vw 5vw; }
-
-    /* Respect users who prefer reduced motion */
-    @media (prefers-reduced-motion: reduce){
-      .chromatic { transition: none; }
-      .stage::before{ display:none; }
-      body{ filter:none; }
+    h1{
+      margin:0 0 18px 0;
+      font-size: clamp(44px, 6vw, 84px);
+      line-height:1.02;
+      letter-spacing:-0.03em;
+      font-weight:700;
     }
 
-    /* Responsive type scaling for smaller screens */
-    @media (max-width: 900px){
-      p.p1{ font-size: clamp(48px, 12vw, 9.5em); }
-      p.p2{ font-size: clamp(36px, 9vw, 7em); }
-      p.email{ font-size: clamp(28px, 7vw, 5em); }
+    .rule{
+      height:1px;
+      background:var(--rule);
+      margin: 18px 0 22px;
     }
-  </style>
-</head>
-<body class="stage">
-  <div class="container">
-    <p class="p1 chromatic"><span class="s1">BYSHIN</span></p>
-    <p class="p2"><br></p>
-    <p class="p1 chromatic">A Creative Design Studio &amp; Brand Exploration Lab by Shin—
-      exploring where Product, AI, Experience, Space, and Visual Design converge
-      to create systems that connect people, technology, and culture.</p>
-    <p class="p2"><br></p>
-    <p class="email chromatic"><a href="mailto:officebyshin@gmail.com">officebyshin@gmail.com</a></p>
-    <p class="p2"><br></p>
-  </div>
 
-  <script>
-    // Smoothly update CSS variables based on mouse position
-    (function(){
-      const root = document.documentElement;
-      let pending = false;
-      let lastX = window.innerWidth / 2;
-      let lastY = window.innerHeight / 2;
+    p{
+      margin:0;
+      font-size: clamp(16px, 1.55vw, 22px);
+      line-height:1.55;
+      color: var(--muted);
+      max-width: 70ch;
+    }
 
-      function setVars(x, y){
-        const mx = (x / window.innerWidth) * 100;
-        const my = (y / window.innerHeight) * 100;
-        root.style.setProperty('--mx', mx.toFixed(2) + '%');
-        root.style.setProperty('--my', my.toFixed(2) + '%');
-        // Also rotate global hue slightly by X position
-        const hue = Math.round(mx * 1.8) + 'deg';
-        root.style.setProperty('--h', hue);
-      }
+    a{
+      display:inline-block;
+      margin-top: 26px;
+      font-size: clamp(18px, 1.6vw, 24px);
+      color: var(--fg);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,.35);
+      padding-bottom: 2px;
+    }
+    a:hover{
+      border-bottom-color: var(--fg);
+    }
 
-      setVars(lastX, lastY);
-
-      function onMove(e){
-        lastX = e.clientX; lastY = e.clientY;
-        if (!pending){
-          pending = true;
-          requestAnimationFrame(() => { setVars(lastX, lastY); pending = false; });
-        }
-      }
-
-      window.addEventListener('mousemove', onMove);
-
-      // Touch support
-      window.addEventListener('touchmove', (e) => {
-        const t = e.touches[0];
-        if (!t) return;
-        lastX = t.clientX; lastY = t.clientY;
-        if (!pending){
-          pending = true;
-          requestAnimationFrame(() => { setVars(lastX, lastY); pending = false; });
-        }
-      }, { passive: true });
-
-      // Resize handling keeps percentages consistent
-      window.addEventListener('resize', () => setVars(lastX, lastY));
-    })();
-  </script>
-</body>
-</html>
+    /* Accessibility: focus */
+    a:focus-visible{
+      out
