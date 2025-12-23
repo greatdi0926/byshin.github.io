@@ -7,10 +7,11 @@
 
   <style>
     :root{
-      --bg:#0b0b0b;
-      --fg:#f2f2f2;
-      --muted:#bdbdbd;
-      --rule:rgba(255,255,255,.16);
+      /* Premium Dark Brown Palette */
+      --bg:#0f0b08;          /* deep espresso brown */
+      --fg:#f3f1ee;          /* warm ivory white */
+      --muted:#b9b2aa;       /* desaturated warm gray */
+      --rule:rgba(243,241,238,.18);
 
       /* spotlight position (updated by JS) */
       --mx:50%;
@@ -30,16 +31,18 @@
       text-rendering: geometricPrecision;
     }
 
-    /* subtle black&white spotlight */
+    /* warm premium spotlight */
     body::before{
       content:"";
       position:fixed;
       inset:0;
       pointer-events:none;
       background:
-        radial-gradient(900px circle at var(--mx) var(--my),
-          rgba(255,255,255,.10),
-          transparent 55%);
+        radial-gradient(
+          900px circle at var(--mx) var(--my),
+          rgba(255,248,240,.10),
+          transparent 55%
+        );
       opacity:.9;
     }
 
@@ -56,7 +59,7 @@
       width:min(980px, 100%);
     }
 
-    h1{
+    h2{
       margin:0 0 18px 0;
       font-size: clamp(44px, 6vw, 84px);
       line-height:1.02;
@@ -85,91 +88,20 @@
       font-size: clamp(18px, 1.6vw, 24px);
       color: var(--fg);
       text-decoration: none;
-      border-bottom: 1px solid rgba(255,255,255,.35);
+      border-bottom: 1px solid rgba(243,241,238,.4);
       padding-bottom: 2px;
     }
+
     a:hover{
       border-bottom-color: var(--fg);
     }
+
     a:focus-visible{
       outline: 2px solid var(--fg);
       outline-offset: 6px;
       border-bottom-color: transparent;
     }
 
-    /* Optional: tiny footer */
     .meta{
       margin-top: 18px;
       font-size: 13px;
-      color: rgba(255,255,255,.45);
-      letter-spacing: 0;
-    }
-  </style>
-</head>
-
-<body>
-  <main>
-    <section class="card" aria-label="BYSHIN contact">
-      <h2>BYSHIN</h2>
-      <div class="rule" aria-hidden="true"></div>
-
-      <p>
-        A design studio exploring where brand, product, experience, space, and visual design converge, 
-        creating clear and responsible systems that connect people, technology, and culture.
-      </p>
-
-      <a href="mailto:officebyshin@gmail.com">officebyshin@gmail.com</a>
-      <div class="meta">© BYSHIN</div>
-    </section>
-  </main>
-
-  <script>
-    (function () {
-      const root = document.documentElement;
-
-      let pending = false;
-      let x = window.innerWidth / 2;
-      let y = window.innerHeight / 2;
-
-      function setVars() {
-        const w = window.innerWidth || 1;
-        const h = window.innerHeight || 1;
-        root.style.setProperty("--mx", ((x / w) * 100).toFixed(2) + "%");
-        root.style.setProperty("--my", ((y / h) * 100).toFixed(2) + "%");
-        pending = false;
-      }
-
-      function queueUpdate(nx, ny) {
-        x = nx; y = ny;
-        if (!pending) {
-          pending = true;
-          requestAnimationFrame(setVars);
-        }
-      }
-
-      window.addEventListener("mousemove", (e) => {
-        queueUpdate(e.clientX, e.clientY);
-      });
-
-      window.addEventListener(
-        "touchmove",
-        (e) => {
-          const t = e.touches && e.touches[0];
-          if (!t) return;
-          queueUpdate(t.clientX, t.clientY);
-        },
-        { passive: true }
-      );
-
-      window.addEventListener("resize", () => {
-        x = window.innerWidth / 2;
-        y = window.innerHeight / 2;
-        setVars();
-      });
-
-      setVars();
-    })();
-  </script>
-</body>
-</html>
-
