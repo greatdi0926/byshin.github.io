@@ -117,7 +117,7 @@
       overflow:hidden;
       cursor:pointer;
       text-align:left;
-      padding:28px;
+      padding:0;
       transition:.25s ease;
     }
 
@@ -125,6 +125,26 @@
       transform:translateY(-4px);
       border-color:rgba(255,255,255,.32);
       background:rgba(255,255,255,.1);
+    }
+
+    .project img{
+      width:100%;
+      aspect-ratio:4/3;
+      object-fit:cover;
+      display:block;
+      background:#222;
+      filter:grayscale(100%);
+      opacity:.92;
+      transition:.25s ease;
+    }
+
+    .project:hover img{
+      filter:grayscale(0%);
+      opacity:1;
+    }
+
+    .project-info{
+      padding:24px;
     }
 
     .project-category{
@@ -180,7 +200,7 @@
     }
 
     .modal-box{
-      max-width:900px;
+      max-width:1180px;
       margin:0 auto;
       background:#101010;
       border:1px solid rgba(255,255,255,.16);
@@ -224,24 +244,20 @@
       background:rgba(255,255,255,.16);
     }
 
-    .modal-body{
-      padding:clamp(24px, 4vw, 42px);
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:12px;
+      padding:24px;
     }
 
-    .modal-body p{
-      font-size:17px;
-      line-height:1.7;
-    }
-
-    .notice{
-      margin-top:26px;
-      padding:18px 20px;
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:16px;
-      color:rgba(255,255,255,.55);
-      font-size:14px;
-      line-height:1.6;
-      background:rgba(255,255,255,.04);
+    .gallery img{
+      width:100%;
+      aspect-ratio:4/3;
+      object-fit:cover;
+      border-radius:14px;
+      background:#222;
+      display:block;
     }
 
     .footer{
@@ -250,12 +266,18 @@
       font-size:13px;
     }
 
+    @media(max-width:800px){
+      .gallery{
+        grid-template-columns:1fr;
+      }
+    }
+
     @media(max-width:560px){
       .modal-head{
         flex-direction:column-reverse;
       }
 
-      .project{
+      .project-info{
         padding:22px;
       }
     }
@@ -280,7 +302,7 @@
     <section>
       <div class="section-title">
         <span>Selected Project</span>
-        <span>Preview Only</span>
+        <span>Click to view</span>
       </div>
 
       <div class="grid" id="projectGrid"></div>
@@ -300,13 +322,7 @@
         <button class="close" id="closeBtn" aria-label="Close">×</button>
       </div>
 
-      <div class="modal-body">
-        <p id="modalDetail"></p>
-
-        <div class="notice">
-          Project images are currently under preparation and will be available soon.
-        </div>
-      </div>
+      <div class="gallery" id="gallery"></div>
     </div>
   </div>
 
@@ -316,8 +332,13 @@
         title: "Delta Square",
         category: "Product / Education / 3D Printer",
         summary: "An education-focused 3D printer with an enclosed negative-pressure airflow structure.",
-        description: "Delta Square is a compact education-focused 3D printer designed for healthier learning environments.",
-        detail: "Its enclosed square frame and negative-pressure airflow structure draw internal emissions through a HEPA filter, supporting cleaner and safer creative education. This project explores how product design, health-conscious engineering, and sustainable digital fabrication can work together in educational settings."
+        description: "Delta Square is a compact education-focused 3D printer designed for healthier learning environments. Its enclosed square frame and negative-pressure airflow structure draw internal emissions through a HEPA filter, supporting cleaner and safer creative education.",
+        cover: "assets/projects/delta-square/cover.jpg",
+        images: [
+          "assets/projects/delta-square/01.jpg",
+          "assets/projects/delta-square/02.jpg",
+          "assets/projects/delta-square/03.jpg"
+        ]
       }
     ];
 
@@ -325,7 +346,7 @@
     const modal = document.getElementById("modal");
     const modalTitle = document.getElementById("modalTitle");
     const modalDescription = document.getElementById("modalDescription");
-    const modalDetail = document.getElementById("modalDetail");
+    const gallery = document.getElementById("gallery");
     const closeBtn = document.getElementById("closeBtn");
 
     projects.forEach((project) => {
@@ -333,16 +354,23 @@
       button.className = "project";
 
       button.innerHTML = `
-        <span class="project-category">${project.category}</span>
-        <strong class="project-title">${project.title}</strong>
-        <span class="project-summary">${project.summary}</span>
-        <span class="project-status">Images hidden for now</span>
+        <img src="${project.cover}" alt="${project.title}">
+        <div class="project-info">
+          <span class="project-category">${project.category}</span>
+          <strong class="project-title">${project.title}</strong>
+          <span class="project-summary">${project.summary}</span>
+          <span class="project-status">View images</span>
+        </div>
       `;
 
       button.addEventListener("click", () => {
         modalTitle.textContent = project.title;
         modalDescription.textContent = project.description;
-        modalDetail.textContent = project.detail;
+
+        gallery.innerHTML = project.images.map((image, index) => {
+          return `<img src="${image}" alt="${project.title} image ${index + 1}">`;
+        }).join("");
+
         modal.hidden = false;
       });
 
@@ -351,17 +379,20 @@
 
     closeBtn.addEventListener("click", () => {
       modal.hidden = true;
+      gallery.innerHTML = "";
     });
 
     modal.addEventListener("click", (event) => {
       if(event.target === modal){
         modal.hidden = true;
+        gallery.innerHTML = "";
       }
     });
 
     window.addEventListener("keydown", (event) => {
       if(event.key === "Escape"){
         modal.hidden = true;
+        gallery.innerHTML = "";
       }
     });
 
